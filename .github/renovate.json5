@@ -9,11 +9,11 @@
     ":enablePreCommit",
     ":automergeDigest",
     ":automergeBranch",
-    "github>onedr0p/flux-cluster-template//.github/renovate/autoMerge.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/commitMessage.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/groups.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/labels.json5",
-    "github>onedr0p/flux-cluster-template//.github/renovate/semanticCommits.json5",
+    "github>kilip/olympus-cluster//.github/renovate/autoMerge.json5",
+    "github>kilip/olympus-cluster//.github/renovate/commitMessage.json5",
+    "github>kilip/olympus-cluster//.github/renovate/groups.json5",
+    "github>kilip/olympus-cluster//.github/renovate/labels.json5",
+    "github>kilip/olympus-cluster//.github/renovate/semanticCommits.json5",
     "helpers:pinGitHubActionDigests"
   ],
   "dependencyDashboard": true,
@@ -32,7 +32,7 @@
   },
   "kubernetes": {
     "fileMatch": [
-      "ansible/.+\\.ya?ml.j2$",
+      "provision/ansible/.+\\.ya?ml.j2$",
       "kubernetes/.+\\.ya?ml$"
     ]
   },
@@ -40,7 +40,7 @@
     {
       "description": "Process various other dependencies",
       "fileMatch": [
-        "ansible/.+\\.ya?ml$",
+        "provision/ansible/.+\\.ya?ml$",
         "kubernetes/.+\\.ya?ml$"
       ],
       "matchStrings": [

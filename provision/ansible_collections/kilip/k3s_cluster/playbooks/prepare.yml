@@ -1,0 +1,11 @@
+---
+- hosts:
+    - master
+    - worker
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  tasks:
+    - debug: var=k3s_control_node
+    - ansible.builtin.include_role:
+        name: prepare

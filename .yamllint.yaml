@@ -1,5 +1,6 @@
 ---
 ignore: |
+  .archive/**/*.*
   *.sops.*
 extends: default
 rules:

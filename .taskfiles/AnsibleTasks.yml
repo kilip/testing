@@ -6,9 +6,9 @@ env:
   K8S_AUTH_KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
 
 vars:
-  ANSIBLE_PLAYBOOK_DIR: "{{.ANSIBLE_DIR}}/playbooks"
-  ANSIBLE_INVENTORY_DIR: "{{.ANSIBLE_DIR}}/inventory/{{.DEPLOY}}"
-  ANSIBLE_INVENTORY: "{{.ANSIBLE_DIR}}/inventory/{{.DEPLOY}}/hosts.ini"
+  ANSIBLE_PLAYBOOK_DIR: "{{.ROOT_DIR}}/provision/ansible"
+  ANSIBLE_INVENTORY_DIR: "{{.ROOT_DIR}}/inventory/{{.DEPLOY}}"
+  ANSIBLE_INVENTORY: "{{.ROOT_DIR}}/inventory/{{.DEPLOY}}/hosts.ini"
 
 tasks:
 
@@ -16,9 +16,10 @@ tasks:
     desc: Install / Upgrade Ansible galaxy deps
     dir: "{{.ANSIBLE_DIR}}"
     cmds:
+      - echo "{{.ANSIBLE_DIR}}"
       - pip3 install --user --requirement requirements.txt
-      - ansible-galaxy install -r requirements.yml --roles-path ~/.ansible/roles --force
-      - ansible-galaxy collection install -r requirements.yml --collections-path ~/.ansible/collections --force
+      - ansible-galaxy install -r requirements.yml --roles-path ~/.ansible/roles || exit 0
+      - ansible-galaxy collection install -r requirements.yml --collections-path ~/.ansible/collections || exit 0
 
   list:
     desc: List all the hosts
@@ -30,17 +31,17 @@ tasks:
     desc: Prepare all the k8s nodes for running k3s
     dir: "{{.ANSIBLE_DIR}}"
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} {{.ANSIBLE_PLAYBOOK_DIR}}/cluster-prepare.yml
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY}}  {{.ANSIBLE_PLAYBOOK_DIR}}/prepare.yml {{.CLI_ARGS}} || exit 0
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.prepare {{.CLI_ARGS}} || exit 0
 
   install:
     desc: Install Kubernetes on the nodes
     dir: "{{.ANSIBLE_DIR}}"
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} {{.ANSIBLE_PLAYBOOK_DIR}}/cluster-installation.yml
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.install {{.CLI_ARGS}}
 
   nuke:
     desc: Uninstall Kubernetes on the nodes
-    dir: "{{.ANSIBLE_DIR}}"
     interactive: true
     cmds:
       - ansible-playbook -i {{.ANSIBLE_INVENTORY}} {{.ANSIBLE_PLAYBOOK_DIR}}/cluster-nuke.yml
@@ -50,34 +51,31 @@ tasks:
     desc: Ping all the hosts
     dir: "{{.ANSIBLE_DIR}}"
     cmds:
-      - ansible all -i {{.ANSIBLE_INVENTORY}} --one-line -m 'ping'
+      - ansible all -i {{.ANSIBLE_INVENTORY}} --one-line -m 'ping' {{.CLI_ARGS}}
 
   uptime:
     desc: Uptime of all the hosts
-    dir: "{{.ANSIBLE_DIR}}"
     cmds:
       - ansible all -i {{.ANSIBLE_INVENTORY}} --one-line -a 'uptime'
 
   rollout-reboot:
     desc: Rollout a reboot across all the k8s nodes
-    dir: "{{.ANSIBLE_DIR}}"
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} {{.ANSIBLE_PLAYBOOK_DIR}}/cluster-rollout-reboot.yml
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.rollout-reboot
 
-  force-reboot:
+  reboot:
     desc: Reboot all the k8s nodes
-    dir: "{{.ANSIBLE_DIR}}"
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} {{.ANSIBLE_PLAYBOOK_DIR}}/cluster-reboot.yml
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.reboot
 
-  force-poweroff:
+  poweroff:
     desc: Shutdown all the k8s nodes
     dir: "{{.ANSIBLE_DIR}}"
     cmds:
-      - ansible kubernetes -i {{.ANSIBLE_INVENTORY}} -a '/usr/bin/systemctl poweroff' --become
+      - ansible kubernetes -i {{.ANSIBLE_INVENTORY}} -a '/usr/bin/systemctl poweroff' --become -l kubernetes
 
   test:
     desc: Test vars
     dir: "{{.ANSIBLE_DIR}}"
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} {{.ANSIBLE_PLAYBOOK_DIR}}/cluster-test.yml
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.cluster-test

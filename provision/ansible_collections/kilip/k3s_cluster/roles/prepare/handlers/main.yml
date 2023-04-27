@@ -1,0 +1,9 @@
+---
+- name: reboot
+  ansible.builtin.reboot:
+    msg: Rebooting nodes
+    reboot_timeout: 3600
+
+- name: restart logind
+  ansible.builtin.service:
+    service: systemd-logind
