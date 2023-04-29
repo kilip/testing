@@ -45,7 +45,7 @@ tasks:
     interactive: true
     cmds:
       - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.nuke
-      - task: force-reboot
+      - task: reboot
 
   ping:
     desc: Ping all the hosts
