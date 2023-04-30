@@ -61,10 +61,22 @@ spec:
       accessModes:
         - ReadWriteOnce
       size: 1Gi
+    serverDefinitions:
+      enabled: true
+      servers:
+        postgres:
+          Name: k8s
+          Group: Servers
+          Port: 5432
+          Username: postgres
+          Password: "${POSTGRES_ADMIN_PASS}"
+          Host: postgresql.database.svc.cluster.local
+          SSLMode: prefer
+          MaintenanceDB: postgres
     resources:
       requests:
         cpu: 15m
         memory: 128M
       limits:
         # cpu: 15m
-        memory: 256M
+        memory: 512M
