@@ -37,9 +37,15 @@ spec:
       postgresPassword: "${POSTGRES_ADMIN_PASS}"
       database: postgres
     primary:
+      service:
+        type: LoadBalancer
+        loadBalancerSourceRanges:
+          - 10.0.0.0/8
       persistence:
         enabled: true
         existingClaim: postgresql-data
+        storageClass: longhorn
+        size: 1Gi
       initdb:
         scriptsSecret: postgresql-init
     metrics:
