@@ -43,7 +43,7 @@ spec:
           - 10.0.0.0/8
       persistence:
         enabled: true
-        existingClaim: postgresql-data
+        existingClaim: postgresql-v1
         storageClass: longhorn
         size: 1Gi
       initdb:
