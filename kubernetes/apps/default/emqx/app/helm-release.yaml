@@ -15,6 +15,7 @@ spec:
         kind: HelmRepository
         name: emqx
         namespace: flux-system
+  timeout: 600s
   maxHistory: 3
   install:
     createNamespace: true
