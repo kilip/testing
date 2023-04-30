@@ -53,3 +53,12 @@ tasks:
     desc: Watch all kustomization
     cmds:
       - watch -n 1 flux get kustomization -A
+
+  hr-reconcile:
+    desc: Reconcile helm release
+    cmds:
+      - kubectl delete secret -l owner=helm,name={{.RELEASE_NAME}},status=pending-upgrade
+      - flux reconcile hr -n {{.RELEASE_NAMESPACE}} {{.RELEASE_NAME}}
+    vars:
+      RELEASE_NAMESPACE: '{{ (split " " .CLI_ARGS)._0 }}'
+      RELEASE_NAME: '{{ (split " " .CLI_ARGS)._1 }}'

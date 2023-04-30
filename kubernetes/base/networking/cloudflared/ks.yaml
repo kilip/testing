@@ -8,6 +8,7 @@ spec:
   dependsOn:
     - name: cluster-base-metallb
     - name: cluster-base-metallb-config
+    - name: cluster-base-ingress-nginx
   path: ./kubernetes/base/networking/cloudflared/app
   prune: true
   sourceRef:
