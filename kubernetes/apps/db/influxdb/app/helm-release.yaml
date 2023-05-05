@@ -46,7 +46,7 @@ spec:
         hajimari.io/info: InfluxDB
         hajimari.io/group: tools
       hosts:
-        - host: &host "influxdb.${SECRET_DOMAIN}"
+        - host: &host "influxdb.itstoni.com"
           paths:
             - path: /
               pathType: Prefix
