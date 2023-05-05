@@ -15,7 +15,6 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  timeout: 600s
   maxHistory: 2
   install:
     createNamespace: true
@@ -28,6 +27,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    dependsOn:
+      - name: home-assistant-config
     initContainers:
       01-init-db:
         image: ghcr.io/onedr0p/postgres-initdb:14.7
@@ -36,19 +37,19 @@ spec:
           - secretRef:
               name: home-assistant-secret
         env:
-          POSTGRES_SUPER_PASS: "${POSTGRES_ADMIN_PASS}"
+          POSTGRES_SUPER_PASS: "${POSTGRES_SUPER_PASS}"
     controller:
       type: statefulset
       annotations:
         reloader.stakater.com/auto: "true"
     image:
-      repository: ghcr.io/kilip/home-assistant
-      tag: 2023.4.6-c1
+      repository: ghcr.io/onedr0p/home-assistant
+      tag: 2023.4.6
     env:
       TZ: "${TIMEZONE}"
       POSTGRES_HOST: postgresql.database.svc.cluster.local
       POSTGRES_DB: home_assistant
-      POSTGRES_SUPER_PASS: "${POSTGRES_ADMIN_PASS}"
+      POSTGRES_SUPER_PASS: "${POSTGRES_SUPER_PASS}"
     envFrom:
       - secretRef:
           name: home-assistant-secret
@@ -71,23 +72,6 @@ spec:
         tls:
           - hosts:
               - *host
-    persistence:
-      deploy-key:
-        enabled: true
-        type: secret
-        name: home-assistant-secret
-        defaultMode: 256
-        subPath:
-          - path: GH_DEPLOY_KEY
-            mountPath: /config/.ssh/id_rsa
-      ga-service-account:
-        enabled: true
-        type: secret
-        name: home-assistant-secret
-        defaultMode: 256
-        subPath:
-          - path: GA_SERVICE_ACCOUNT
-            mountPath: /config/ga-service-account.json
     probes:
       liveness:
         enabled: false
@@ -95,20 +79,22 @@ spec:
         enabled: false
       startup:
         enabled: false
+
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
       fsGroup: 568
       fsGroupChangePolicy: OnRootMismatch
+
     volumeClaimTemplates:
       - name: config
+        existingClaim: hass-config-v1
         mountPath: /config
-        accessMode: ReadWriteOnce
-        size: 1Gi
-        storageClass: ceph-block
+        subPath: hass-config
+
     resources:
       requests:
         cpu: 10m
         memory: 100Mi
       limits:
-        memory: 750Mi
+        memory: 512Mi

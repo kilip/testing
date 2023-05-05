@@ -7,8 +7,8 @@ env:
 
 vars:
   ANSIBLE_PLAYBOOK_DIR: "{{.ROOT_DIR}}/provision/ansible"
-  ANSIBLE_INVENTORY_DIR: "{{.ROOT_DIR}}/inventory/{{.DEPLOY}}"
-  ANSIBLE_INVENTORY: "{{.ROOT_DIR}}/inventory/{{.DEPLOY}}/hosts.ini"
+  ANSIBLE_INVENTORY_DIR: "{{.ROOT_DIR}}/inventory"
+  ANSIBLE_INVENTORY: "{{.ROOT_DIR}}/inventory/hosts.ini"
 
 tasks:
 
@@ -44,7 +44,7 @@ tasks:
     desc: Uninstall Kubernetes on the nodes
     interactive: true
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.nuke
+      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.nuke {{.CLI_ARGS}}
       - task: reboot
 
   ping:
@@ -66,7 +66,7 @@ tasks:
   reboot:
     desc: Reboot all the k8s nodes
     cmds:
-      - ansible-playbook -i {{.ANSIBLE_INVENTORY}} kilip.k3s_cluster.reboot
+      - ansible kubernetes -i {{.ANSIBLE_INVENTORY}} --one-line -m 'reboot' {{.CLI_ARGS}}
 
   poweroff:
     desc: Shutdown all the k8s nodes
@@ -97,3 +97,11 @@ tasks:
     dir: "{{.ANSIBLE_DIR}}"
     cmds:
       - ansible kubernetes -i {{.ANSIBLE_INVENTORY}} -a 'service k3s status' --become -l kubernetes
+
+  exec:
+    desc: Execute command into kubernetes hosts
+  rook:cleanup-dir:
+    desc: Cleanup rook dir
+    dir: "{{.ANSIBLE_DIR}}"
+    cmds:
+      - ansible kubernetes -i {{.ANSIBLE_INVENTORY}} -a 'rm -rf /var/lib/rook' --become -l kubernetes

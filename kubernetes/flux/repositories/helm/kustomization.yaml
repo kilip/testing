@@ -8,7 +8,9 @@ resources:
   - ./bjw-s.yaml
   - ./emqx.yaml
   - ./external-dns.yaml
+  - ./grafana.yaml
   - ./hajimari.yaml
+  - ./influxdata.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
   - ./k8s-gateway.yaml
@@ -19,6 +21,7 @@ resources:
   - ./nextcloud.yaml
   - ./nfs-provisioner.yaml
   - ./olympus.yaml
+  - ./prometheus-community.yaml
   - ./rook-ceph.yaml
   - ./runix.yaml
   - ./stakater.yaml
