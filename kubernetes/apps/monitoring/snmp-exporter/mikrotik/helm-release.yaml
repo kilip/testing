@@ -42,15 +42,15 @@ spec:
       enabled: true
       namespace: monitoring
       params:
-        - name: Ares
+        - name: ares
           module:
             - mikrotik
           target: 10.0.0.1
-        - name: Mars
+        - name: mars
           module:
             - mikrotik
           target: 10.0.0.2
-        - name: Venus
+        - name: venus
           module:
             - mikrotik
           target: 10.0.0.3
