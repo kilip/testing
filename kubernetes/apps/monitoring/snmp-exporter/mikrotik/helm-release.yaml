@@ -42,10 +42,18 @@ spec:
       enabled: true
       namespace: monitoring
       params:
-        - name: ares
+        - name: Ares
           module:
             - mikrotik
           target: 10.0.0.1
+        - name: Mars
+          module:
+            - mikrotik
+          target: 10.0.0.2
+        - name: Venus
+          module:
+            - mikrotik
+          target: 10.0.0.3
       path: /snmp
       scrapeTimeout: 10s
       relabelings:
