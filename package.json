@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepare": "husky install",
+    "test": "turbo run test",
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.2",
+    "@svitejs/changesets-changelog-github-compact": "^1.1.0",
+    "changeset-conventional-commits": "^0.2.2",
+    "eslint": "^8.48.0",
+    "husky": "^8.0.0",
+    "prettier": "^3.0.3",
+    "tsconfig": "workspace:*",
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@8.10.3",
+  "name": "reauth"
+}
