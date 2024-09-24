@@ -19,6 +19,6 @@
     "tsconfig": "workspace:*",
     "turbo": "latest"
   },
-  "packageManager": "pnpm@8.10.3",
+  "packageManager": "pnpm@9.11.0",
   "name": "reauth"
 }
